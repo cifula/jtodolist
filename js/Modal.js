@@ -77,7 +77,6 @@ class modalEvent {
             boardService.getInstance().updateLocalStorage();
         }
     }
-
 }
 
 
@@ -130,6 +129,7 @@ class modalService {
             modalEvent.getInstance().addEventCancelButtonClick()
             modalEvent.getInstance().addEventSaveButtonClick()
     }
+    
 
     closeAddTodoModal(modalContainer) {
         modalContainer.classList.add("hidden-menu");
