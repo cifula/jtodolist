@@ -101,8 +101,6 @@ class boardEvent {
                         this.removeIndex = index;
                     }
                 })
-
-                console.log(this.removeIndex)
                 
                 
                 boardService.getInstance().todoArray[this.removeListIndex].splice(this.removeIndex, 1);
@@ -148,6 +146,7 @@ class boardService {
         });
         boardEvent.getInstance().addEventDragItem();
         boardEvent.getInstance().addEventDeleteTodoClick();
+        modalEvent.getInstance().addTodoItemClick();
     }
 
     loadtodoList(boardList, index) {
@@ -156,7 +155,7 @@ class boardService {
 
         todoList.forEach(todoObj => {
             boardList.innerHTML += `
-                <li class="board-items" draggable="true">
+                <li class="board-items" draggable="true" on>
                     <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
                     <div class="content-header">
                         <h1 class="content-title">${todoObj.todoTitle}</h1>
@@ -172,7 +171,37 @@ class boardService {
         });
     }
 
-    showItemModal(index) {
+    findTodoListIndexByBoardItem(findItem) {
+        const boardLists = document.querySelectorAll(".board-list");
+        const findList = findItem.parentElement;
+        let todoListIndex = null;
+
+        boardLists.forEach((boardList, index) => {
+            if(boardList == findList) {
+                todoListIndex = index;
+            }
+        });
+
+        return todoListIndex;
+    }
+
+    findTodoIndexByBoardItem(findItem) {
+        const boardItems = findItem.parentElement.querySelectorAll(".board-items");
+        let todoIndex = null;
         
+        boardItems.forEach((boardItem, index) => {
+            if(boardItem == findItem) {
+                todoIndex = index;
+            }
+        });
+
+        return todoIndex;
+    }
+
+    findTodoByBoardItem(findItem) {
+        const boardIndex = this.findTodoByBoardItem(findItem);
+        const todoIndex = this.findTodoIndexByBoardItem(findItem);
+
+        return this.todoArray[boardIndex][todoIndex];
     }
 }

@@ -8,11 +8,13 @@ class modalEvent {
     }
     
     addEventAddTodoClick() {
-        const modalContainer = document.querySelector(".modal-container");
         const menuItems = document.querySelectorAll(".menu-items");
 
         menuItems[2].onclick = () => {
-            modalService.getInstance().loadAddTodoModal(modalContainer);
+            modalService.getInstance().loadTodoModal();
+            modalEvent.getInstance().addEventInputFocus();
+            modalEvent.getInstance().addEventCancelButtonClick()
+            modalEvent.getInstance().addEventSaveButtonClick()
         }
     }
 
@@ -34,16 +36,14 @@ class modalEvent {
     }
 
     addEventCancelButtonClick() {
-        const modalContainer = document.querySelector(".modal-container");
         const cancelButton = document.querySelector(".cancel-button");
 
         cancelButton.onclick = () => {
-            modalService.getInstance().closeAddTodoModal(modalContainer);
+            modalService.getInstance().closeAddTodoModal();
         }
     }
 
     addEventSaveButtonClick() {
-        const modalContainer = document.querySelector(".modal-container");
         const saveButton = document.querySelector(".save-button");
         const boardLists = document.querySelectorAll(".board-list");
         const modalInputs = [...document.querySelectorAll(".input")];
@@ -73,9 +73,28 @@ class modalEvent {
             boardService.getInstance().todoArray[0].push(todoObj);
             boardEvent.getInstance().addEventDeleteTodoClick();
             boardEvent.getInstance().addEventDragItem();
-            modalService.getInstance().closeAddTodoModal(modalContainer);
+            modalService.getInstance().closeAddTodoModal();
             boardService.getInstance().updateLocalStorage();
         }
+    }
+
+    
+    addTodoItemClick() {
+        const boardItems = document.querySelectorAll(".board-items");
+
+        boardItems.forEach(boardItem => {
+            boardItem.onclick = () => {
+                // boardService.getInstance().findTodoIndexByBoardItem(boardItem);
+                const todoObj = boardService.getInstance().findTodoByBoardItem(boardItem);
+                // modalService.getInstance().loadTodoModal();
+            }
+        })
+
+            // modalService.getInstance().loadTodoModal(modalContainer);
+            // modalEvent.getInstance().addEventInputFocus();
+            // modalEvent.getInstance().addEventCancelButtonClick()
+            // modalEvent.getInstance().addEventSaveButtonClick()
+        
     }
 }
 
@@ -89,7 +108,17 @@ class modalService {
         return this.#instance;
     }
 
-    loadAddTodoModal(modalContainer) {
+    loadTodoModal(todoObj) {
+        const modalContainer = document.querySelector(".modal-container");
+
+        if(todoObj == null) {
+            todoObj = {
+                todoTitle: "",
+                todoContent:"",
+                todoDate:""
+            }
+        }
+
         modalContainer.classList.remove("hidden-menu");
         modalContainer.innerHTML=``
 
@@ -97,7 +126,7 @@ class modalService {
             <div class="modal-section">
                 <div class="modal-header">
                     <div class="input-container">
-                        <input class="modal-title modal-input input" placeholder="please enter todo...">
+                        <input class="modal-title modal-input input" placeholder="please enter todo..." value=${todoObj.todoTitle}>
                         <div class="input-buttons">
                             <button type="button" class="check-button"><i class="fa-solid fa-check"></i></button>
                             <button type="button" class="x-button"><i class="fa-sharp fa-solid fa-xmark"></i></button>
@@ -107,7 +136,7 @@ class modalService {
                 <div class="modal-main">
                     <h2>Description</h2>
                     <div class="input-container">
-                        <textarea class="modal-description modal-input input" placeholder="Add a description"></textarea>
+                        <textarea class="modal-description modal-input input" placeholder="Add a description">${todoObj.todoContent}</textarea>
                         <div class="input-buttons">
                             <button type="button" class="check-button"><i class="fa-solid fa-check"></i></button>
                             <button type="button" class="x-button"><i class="fa-sharp fa-solid fa-xmark"></i></button>
@@ -116,7 +145,7 @@ class modalService {
                 </div>
                 <div class="modal-footer">
                     <div class="modal-datetime">
-                        <input class="datetime-input input" type="datetime-local">
+                        <input class="datetime-input input" type="datetime-local" value=${todoObj.todoDate}>
                     </div>
                     <div class="modal-buttons">
                         <button type="button" class="save-button">Save</button>
@@ -125,15 +154,14 @@ class modalService {
                 </div>
             </div>
             `
-            modalEvent.getInstance().addEventInputFocus();
-            modalEvent.getInstance().addEventCancelButtonClick()
-            modalEvent.getInstance().addEventSaveButtonClick()
+
     }
     
-
-    closeAddTodoModal(modalContainer) {
+    closeAddTodoModal() {
+        const modalContainer = document.querySelector(".modal-container");
         modalContainer.classList.add("hidden-menu");
     }
+
 }
 
 class testClass {
