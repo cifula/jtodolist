@@ -140,6 +140,12 @@ class boardService {
     loadtodoListAll() {
         const boardLists = document.querySelectorAll(".board-list");
 
+        this.todoArray.forEach(todoList => {
+            todoList.sort(function compare(a, b) {
+                return a.todoDate - b.todoDate;
+              });
+        })
+
         boardLists.forEach((boardList, index) => {
             boardList.innerHTML = ``;
             this.loadtodoList(boardList, index);
@@ -158,9 +164,9 @@ class boardService {
             let dateTime = null;
 
             if(index == 1) {
-                dateTime = todoObj.todoDateTime;
+                dateTime = this.convertDateTime(todoObj.todoDate);
             } else {
-                dateTime = todoObj.todoDate;
+                dateTime = this.convertDate(todoObj.todoDate);
             }
 
             boardList.innerHTML += `
@@ -214,12 +220,20 @@ class boardService {
     }
 
     convertDateTime(dateTimeInput) {
+        if(dateTimeInput == null) {
+            return "";
+        }
+
         const rawTodoDate = new Date(dateTimeInput);
 
         return `${rawTodoDate.getHours()}:${rawTodoDate.getMinutes()}`
     }
 
     convertDate(dateInput) {
+        if(dateInput == null) {
+            return "";
+        }
+
         const rawTodoDate = new Date(dateInput);
 
         const convertDay = (day) => {

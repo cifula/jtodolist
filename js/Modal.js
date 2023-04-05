@@ -55,8 +55,7 @@ class modalEvent {
             const todoObj = {
                 todoTitle: modalInputs[0].value,
                 todoContent:modalInputs[1].value,
-                todoDate: boardService.getInstance().convertDate(modalInputs[2].value),
-                todoDateTime: boardService.getInstance().convertDateTime(modalInputs[2].value)
+                todoDate: modalInputs[2].value
             }
 
             boardLists[0].innerHTML += `
@@ -107,8 +106,7 @@ class modalEvent {
             const todoObj = {
                 todoTitle: modalInputs[0].value,
                 todoContent:modalInputs[1].value,
-                todoDate: boardService.getInstance().convertDate(modalInputs[2].value),
-                todoDateTime: boardService.getInstance().convertDateTime(modalInputs[2].value)
+                todoDate: modalInputs[2].value
             }
 
             const modifyListIndex = boardService.getInstance().findTodoListIndexByBoardItem(boardItem);
@@ -141,8 +139,7 @@ class modalService {
             todoObj = {
                 todoTitle: "",
                 todoContent:"",
-                todoDate:"",
-                todoDateTime:""
+                todoDate:""
             }
 
             buttonClass = "save-button"
