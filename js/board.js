@@ -163,7 +163,6 @@ class boardService {
                 dateTime = todoObj.todoDate;
             }
 
-
             boardList.innerHTML += `
                 <li class="board-items" draggable="true">
                     <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
@@ -214,4 +213,24 @@ class boardService {
         return this.todoArray[boardIndex][todoIndex];
     }
 
+    convertDateTime(dateTimeInput) {
+        const rawTodoDate = new Date(dateTimeInput);
+
+        return `${rawTodoDate.getHours()}:${rawTodoDate.getMinutes()}`
+    }
+
+    convertDate(dateInput) {
+        const rawTodoDate = new Date(dateInput);
+
+        const convertDay = (day) => {
+            return day == 0 ? "일" 
+                : day == 1 ? "월"
+                : day == 2 ? "화"
+                : day == 3 ? "수"
+                : day == 4 ? "목"
+                : day == 5 ? "금" : "토";
+        }
+
+        return `${rawTodoDate.getFullYear()}.${rawTodoDate.getMonth() + 1}.${rawTodoDate.getDate()}(${convertDay(rawTodoDate.getDay())})`
+    }
 }

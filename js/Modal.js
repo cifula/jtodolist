@@ -49,23 +49,14 @@ class modalEvent {
         const boardLists = document.querySelectorAll(".board-list");
         const modalInputs = [...document.querySelectorAll(".input")];
         
-        const convertDay = (day) => {
-            return day == 0 ? "일" 
-                : day == 1 ? "월"
-                : day == 2 ? "화"
-                : day == 3 ? "수"
-                : day == 4 ? "목"
-                : day == 5 ? "금" : "토";
-        }
+
         
         saveButton.onclick = () => {
-            const rawTodoDate = new Date(modalInputs[2].value);
-
             const todoObj = {
                 todoTitle: modalInputs[0].value,
                 todoContent:modalInputs[1].value,
-                todoDate: `${rawTodoDate.getFullYear()}.${rawTodoDate.getMonth() + 1}.${rawTodoDate.getDate()}(${convertDay(rawTodoDate.getDay())})`,
-                todoDateTime: `${rawTodoDate.getHours()}:${rawTodoDate.getMinutes()}`
+                todoDate: boardService.getInstance().convertDate(modalInputs[2].value),
+                todoDateTime: boardService.getInstance().convertDateTime(modalInputs[2].value)
             }
 
             boardLists[0].innerHTML += `
@@ -116,7 +107,8 @@ class modalEvent {
             const todoObj = {
                 todoTitle: modalInputs[0].value,
                 todoContent:modalInputs[1].value,
-                todoDate:modalInputs[2].value
+                todoDate: boardService.getInstance().convertDate(modalInputs[2].value),
+                todoDateTime: boardService.getInstance().convertDateTime(modalInputs[2].value)
             }
 
             const modifyListIndex = boardService.getInstance().findTodoListIndexByBoardItem(boardItem);
@@ -149,7 +141,8 @@ class modalService {
             todoObj = {
                 todoTitle: "",
                 todoContent:"",
-                todoDate:""
+                todoDate:"",
+                todoDateTime:""
             }
 
             buttonClass = "save-button"
