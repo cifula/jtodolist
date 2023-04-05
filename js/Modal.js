@@ -9,9 +9,10 @@ class modalEvent {
     
     addEventAddTodoClick() {
         const menuItems = document.querySelectorAll(".menu-items");
+        const modalFlag = "add"
 
         menuItems[2].onclick = () => {
-            modalService.getInstance().loadTodoModal();
+            modalService.getInstance().loadTodoModal(modalFlag);
             modalEvent.getInstance().addEventInputFocus();
             modalEvent.getInstance().addEventCancelButtonClick()
             modalEvent.getInstance().addEventSaveButtonClick()
@@ -47,12 +48,24 @@ class modalEvent {
         const saveButton = document.querySelector(".save-button");
         const boardLists = document.querySelectorAll(".board-list");
         const modalInputs = [...document.querySelectorAll(".input")];
-
+        
+        const convertDay = (day) => {
+            return day == 0 ? "일" 
+                : day == 1 ? "월"
+                : day == 2 ? "화"
+                : day == 3 ? "수"
+                : day == 4 ? "목"
+                : day == 5 ? "금" : "토";
+        }
+        
         saveButton.onclick = () => {
+            const rawTodoDate = new Date(modalInputs[2].value);
+
             const todoObj = {
                 todoTitle: modalInputs[0].value,
                 todoContent:modalInputs[1].value,
-                todoDate:modalInputs[2].value
+                todoDate: `${rawTodoDate.getFullYear()}.${rawTodoDate.getMonth() + 1}.${rawTodoDate.getDate()}(${convertDay(rawTodoDate.getDay())})`,
+                todoDateTime: `${rawTodoDate.getHours()}:${rawTodoDate.getMinutes()}`
             }
 
             boardLists[0].innerHTML += `
@@ -81,20 +94,39 @@ class modalEvent {
     
     addTodoItemClick() {
         const boardItems = document.querySelectorAll(".board-items");
+        const modalFlag = "modify"
 
         boardItems.forEach(boardItem => {
             boardItem.onclick = () => {
-                // boardService.getInstance().findTodoIndexByBoardItem(boardItem);
                 const todoObj = boardService.getInstance().findTodoByBoardItem(boardItem);
-                // modalService.getInstance().loadTodoModal();
+                modalService.getInstance().loadTodoModal(modalFlag, todoObj);
+                modalEvent.getInstance().addEventInputFocus();
+                modalEvent.getInstance().addEventCancelButtonClick()
+                modalEvent.getInstance().addEventUpdateButtonClick(boardItem);
             }
         })
+    }
 
-            // modalService.getInstance().loadTodoModal(modalContainer);
-            // modalEvent.getInstance().addEventInputFocus();
-            // modalEvent.getInstance().addEventCancelButtonClick()
-            // modalEvent.getInstance().addEventSaveButtonClick()
-        
+    addEventUpdateButtonClick(boardItem) {
+        const updateButton = document.querySelector(".update-button");
+        const modalInputs = [...document.querySelectorAll(".input")];
+        const todoArray = boardService.getInstance().todoArray;
+
+        updateButton.onclick = () => {
+            const todoObj = {
+                todoTitle: modalInputs[0].value,
+                todoContent:modalInputs[1].value,
+                todoDate:modalInputs[2].value
+            }
+
+            const modifyListIndex = boardService.getInstance().findTodoListIndexByBoardItem(boardItem);
+            const modifyTodoIndex = boardService.getInstance().findTodoIndexByBoardItem(boardItem);
+
+            todoArray[modifyListIndex].splice(modifyTodoIndex, 1, todoObj);
+
+            modalService.getInstance().closeAddTodoModal();
+            boardService.getInstance().updateLocalStorage();
+        }
     }
 }
 
@@ -108,15 +140,23 @@ class modalService {
         return this.#instance;
     }
 
-    loadTodoModal(todoObj) {
+    loadTodoModal(modalFlag, todoObj) {
         const modalContainer = document.querySelector(".modal-container");
+        let buttonClass = null;
+        let buttonContent = null;
 
-        if(todoObj == null) {
+        if(modalFlag == "add") {
             todoObj = {
                 todoTitle: "",
                 todoContent:"",
                 todoDate:""
             }
+
+            buttonClass = "save-button"
+            buttonContent = "Save"
+        } else if(modalFlag == "modify") {
+            buttonClass = "update-button"
+            buttonContent = "Update"
         }
 
         modalContainer.classList.remove("hidden-menu");
@@ -148,7 +188,7 @@ class modalService {
                         <input class="datetime-input input" type="datetime-local" value=${todoObj.todoDate}>
                     </div>
                     <div class="modal-buttons">
-                        <button type="button" class="save-button">Save</button>
+                        <button type="button" class="${buttonClass}">${buttonContent}</button>
                         <button type="button" class="cancel-button">Cancel</button>
                     </div>
                 </div>
@@ -161,49 +201,4 @@ class modalService {
         const modalContainer = document.querySelector(".modal-container");
         modalContainer.classList.add("hidden-menu");
     }
-
-}
-
-class testClass {
-    static #instance = null;
-    static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new testClass();
-        }
-        return this.#instance;
-    }
-
-    // testEvent() {
-    //     const menuItems = document.querySelectorAll(".menu-items");
-    //     const boardLists = document.querySelectorAll(".board-list");
-        
-    //     menuItems[2].onclick = () => {
-    //         const todoObj = {
-    //             todoTitle: "TITLE",
-    //             todoContent:"main content1",
-    //             todoDate:"2023-03-20"
-    //         }
-
-    //         boardLists[0].innerHTML += `
-    //         <li class="board-items" draggable="true">
-    //         <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
-    //         <div class="content-header">
-    //             <h1 class="content-title">${todoObj.todoTitle}</h1>
-    //             </div>
-    //             <div class="content-main">
-    //             ${todoObj.todoContent}
-    //             </div>
-    //             <div class="content-footer">
-    //             <div class="content-date">${todoObj.todoDate}</div>
-    //             </div>
-    //             </li>
-    //         `
-
-    //         boardService.getInstance().todoArray[0].push(todoObj);
-    //         boardService.getInstance().updateLocalStorage();
-    //         boardEvent.getInstance().addEventDeleteTodoClick();
-    //         boardEvent.getInstance().addEventDragItem();
-    //     }
-    // }
-
 }

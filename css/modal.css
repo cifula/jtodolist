@@ -172,6 +172,15 @@
     background-color: #0c66e4;
 }
 
+.update-button {
+    color: white;
+    background-color: #0052CC;
+}
+
+.update-button:hover {
+    background-color: #0c66e4;
+}
+
 .cancel-button {
     color: #172B4D;
     background-color: inherit;

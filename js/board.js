@@ -153,9 +153,19 @@ class boardService {
         boardList.innerHTML = ``;
         const todoList = this.todoArray[index];
 
+
         todoList.forEach(todoObj => {
+            let dateTime = null;
+
+            if(index == 1) {
+                dateTime = todoObj.todoDateTime;
+            } else {
+                dateTime = todoObj.todoDate;
+            }
+
+
             boardList.innerHTML += `
-                <li class="board-items" draggable="true" on>
+                <li class="board-items" draggable="true">
                     <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
                     <div class="content-header">
                         <h1 class="content-title">${todoObj.todoTitle}</h1>
@@ -164,7 +174,7 @@ class boardService {
                         ${todoObj.todoContent}
                     </div>
                     <div class="content-footer">
-                        <div class="content-date">${todoObj.todoDate}</div>
+                        <div class="content-date">${dateTime}</div>
                     </div>
                 </li>
             `;
@@ -199,9 +209,9 @@ class boardService {
     }
 
     findTodoByBoardItem(findItem) {
-        const boardIndex = this.findTodoByBoardItem(findItem);
+        const boardIndex = this.findTodoListIndexByBoardItem(findItem);
         const todoIndex = this.findTodoIndexByBoardItem(findItem);
-
         return this.todoArray[boardIndex][todoIndex];
     }
+
 }
