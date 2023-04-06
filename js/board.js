@@ -87,7 +87,8 @@ class boardEvent {
         const removeIndex = null;
 
         deleteButtons.forEach(deleteButton => {
-            deleteButton.onclick = () => {
+            deleteButton.onclick = (e) => {
+                e.stopPropagation();
                 boardLists.forEach((boardList, index) => {
                     if(deleteButton.parentElement.parentElement == boardList) {
                         this.removeListIndex = index;
@@ -140,12 +141,6 @@ class boardService {
     loadtodoListAll() {
         const boardLists = document.querySelectorAll(".board-list");
 
-        this.todoArray.forEach(todoList => {
-            todoList.sort(function compare(a, b) {
-                return a.todoDate - b.todoDate;
-              });
-        })
-
         boardLists.forEach((boardList, index) => {
             boardList.innerHTML = ``;
             this.loadtodoList(boardList, index);
@@ -159,6 +154,9 @@ class boardService {
         boardList.innerHTML = ``;
         const todoList = this.todoArray[index];
 
+        this.todoArray.forEach(list => {
+            list.sort((a, b) => new Date(a.todoDate) - new Date(b.todoDate));
+        });
 
         todoList.forEach(todoObj => {
             let dateTime = null;
@@ -220,7 +218,7 @@ class boardService {
     }
 
     convertDateTime(dateTimeInput) {
-        if(dateTimeInput == null) {
+        if(dateTimeInput == "") {
             return "";
         }
 
@@ -230,7 +228,7 @@ class boardService {
     }
 
     convertDate(dateInput) {
-        if(dateInput == null) {
+        if(dateInput == "") {
             return "";
         }
 
